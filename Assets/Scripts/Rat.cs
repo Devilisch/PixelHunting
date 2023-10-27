@@ -7,7 +7,7 @@ public class Rat : Entity
 {
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (_onHitCoroutine == null)
-            _onHitCoroutine = StartCoroutine(OnHit());
+        OnHitCoroutine ??= StartCoroutine(OnHit());
+        col.gameObject.GetComponent<IDamageable>()?.OnDamage();
     }
 }

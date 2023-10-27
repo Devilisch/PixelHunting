@@ -1,40 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer),typeof(Animator),typeof(Collider2D))]
 public class Entity : MonoBehaviour
 {
-    [SerializeField] protected SpriteRenderer spriteRenderer;
-    [SerializeField] protected Animator animator;
-    [SerializeField] protected new Rigidbody2D rigidbody;
-    [SerializeField] protected float onHitPause = 0.25f;
+    protected Coroutine OnHitCoroutine = null;
     
-    protected Coroutine _onHitCoroutine = null;
+    private SpriteRenderer _spriteRenderer;
+    private Animator _animator;
+    private Rigidbody2D _rigidbody;
+    private float _onHitPause = 0.25f;
     
     private static readonly int Idle = Animator.StringToHash("Idle");
     private static readonly int Walk = Animator.StringToHash("Walk");
     private static readonly int Hit = Animator.StringToHash("Hit");
     private static readonly int Death = Animator.StringToHash("Death");
 
-    
 
+
+    public void Init()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
+        _rigidbody = GetComponent<Rigidbody2D>();
+    }
+    
     protected IEnumerator OnHit()
     {
         OnAnimate(AnimationType.HIT);
 
-        yield return new WaitForSeconds(onHitPause);
+        yield return new WaitForSeconds(_onHitPause);
 
-        _onHitCoroutine = null;
+        OnHitCoroutine = null;
     }
     
-    public void OnMove(Vector3 moveVector)
+    public void OnMove(Vector2 velocity)
     {
-        if (_onHitCoroutine != null)
+        if (OnHitCoroutine != null)
             return;
 
-        spriteRenderer.flipX = moveVector.x < 0;
-        transform.position += moveVector;
+        _spriteRenderer.flipX = velocity.x < 0;
+        _rigidbody.velocity = velocity;
     }
 
     protected void OnAnimate(AnimationType type)
@@ -43,18 +51,24 @@ public class Entity : MonoBehaviour
         {
             default:
             case AnimationType.IDLE:
-                animator.SetTrigger(Idle);
+                SetAnimation(Idle);
                 break;
             case AnimationType.WALK:
-                animator.SetTrigger(Walk);
+                SetAnimation(Walk);
                 break;
             case AnimationType.HIT:
-                animator.SetTrigger(Hit);
+                SetAnimation(Hit);
                 break;
             case AnimationType.DEATH:
-                animator.SetTrigger(Death);
+                SetAnimation(Death);
                 break;
         }
+    }
+
+    private void SetAnimation(int nameHash)
+    {
+        if (_animator.parameters.Any(parameter => parameter.nameHash == nameHash))
+            _animator.SetTrigger(nameHash);
     }
 }
 
