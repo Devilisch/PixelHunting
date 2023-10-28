@@ -18,7 +18,7 @@ Test project
 - :o: UI mask
 - :o: Materials: creation and modification in runtime
 + *C#:*
-- :o: Singleton
+- :white_check_mark: Singleton
 - :white_check_mark: Enum
 - :white_check_mark: Switch
 - :o: File management

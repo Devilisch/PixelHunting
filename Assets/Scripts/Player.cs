@@ -33,4 +33,8 @@ public class Player : Entity, IDamageable
         _isActive = false;
         OnAnimate(AnimationType.DEATH);
     }
+
+    public void AddDamageListener(Action action) => _onDamageAction += action;
+    public void RemoveDamageListener(Action action) => _onDamageAction -= action;
+    public void RemoveDamageAllListeners() => _onDamageAction = null;
 }
