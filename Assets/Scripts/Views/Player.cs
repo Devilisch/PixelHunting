@@ -7,10 +7,9 @@ public class Player : Entity, IDamageable
 {
     private bool _isActive = true;
     private Action _onDamageAction;
-    
-    
-    
-    private void OnCollisionEnter2D(Collision2D col)
+
+
+    private void OnTriggerEnter2D(Collider2D col)
     {
         Debug.Log("Player touch " + col.gameObject.name);
         

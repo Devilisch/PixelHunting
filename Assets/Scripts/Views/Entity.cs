@@ -15,6 +15,7 @@ public class Entity : MonoBehaviour
     private Animator _animator;
     private Rigidbody2D _rigidbody;
     private Vector3 _moveToPoint = Vector3.zero;
+    private bool _isIdle = true;
     
     private const float ON_HIT_PAUSE = 0.3f;
 
@@ -25,12 +26,6 @@ public class Entity : MonoBehaviour
 
 
     
-    // delete it after
-    private void Awake()
-    {
-        Init();
-    }
-
     public void Init()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -46,24 +41,24 @@ public class Entity : MonoBehaviour
 
         yield return new WaitForSeconds(ON_HIT_PAUSE);
 
-        OnAnimate(
-            (transform.position - _moveToPoint).magnitude < 0.1f ? 
-                AnimationType.IDLE : AnimationType.WALK
-        );
-
         OnHitCoroutine = null;
     }
     
-    public void OnMove(Vector3 position)
+    public void OnMove(Vector3 newPosition)
     {
+        _isIdle = false;
         OnAnimate(AnimationType.WALK);
+        
+        if (newPosition == _moveToPoint)
+            return;
 
-        _spriteRenderer.flipX = (position.x - transform.position.x) < 0;
-        _moveToPoint = position;
+        _spriteRenderer.flipX = (newPosition.x - transform.position.x) < 0;
+        _moveToPoint = newPosition;
     }
 
     private void OnIdle()
     {
+        _isIdle = true;
         OnAnimate(AnimationType.IDLE);
 
         transform.position = _moveToPoint;
@@ -71,23 +66,20 @@ public class Entity : MonoBehaviour
 
     public void CustomUpdate(float deltaTime)
     {
-        if (OnHitCoroutine != null || transform.position == _moveToPoint || Camera.main == null)
+        if (OnHitCoroutine != null || _isIdle)
             return;
-        
-        Debug.Log((transform.position - _moveToPoint).magnitude);
 
-        if ((transform.position - _moveToPoint).magnitude < 0.1f)
+        transform.position += (_moveToPoint - transform.position).normalized * speed * deltaTime;
+
+        if ((_moveToPoint - transform.position).magnitude < 0.1f)
             OnIdle();
-        else
-            transform.position = Vector2.MoveTowards(
-                transform.position, 
-                _moveToPoint, 
-                speed * Time.deltaTime
-            );
     }
 
-    protected void OnAnimate(AnimationType type)
+    protected void OnAnimate(AnimationType type, bool state = true)
     {
+        if (name.StartsWith("Rat"))
+            Debug.Log(type);
+        
         switch (type)
         {
             default:
@@ -95,7 +87,7 @@ public class Entity : MonoBehaviour
                 SetAnimation(Idle);
                 break;
             case AnimationType.WALK:
-                SetAnimation(Walk);
+                SetAnimation(Walk, state);
                 break;
             case AnimationType.HIT:
                 SetAnimation(Hit);
@@ -108,8 +100,13 @@ public class Entity : MonoBehaviour
 
     private void SetAnimation(int nameHash)
     {
-        if (_animator.parameters.Any(parameter => parameter.nameHash == nameHash))
-            _animator.SetTrigger(nameHash);
+        SetAnimation(Walk, false);
+        _animator.SetTrigger(nameHash);
+    }
+
+    private void SetAnimation(int nameHash, bool state)
+    {
+        _animator.SetBool(nameHash, state);
     }
 }
 

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Image))]
-public class TapManager : MonoBehaviour, IPointerDownHandler
+public class PlayerController : MonoBehaviour, IPointerDownHandler
 {
     private Action<Vector3> _onTapAction;
     

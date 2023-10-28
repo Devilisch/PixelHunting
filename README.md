@@ -14,8 +14,8 @@ Test project
 - :o: Raycasting
 - :white_check_mark: Collider
 - :white_check_mark: Coroutine
-- :o: UI scrolling user interface
-- :o: UI mask
+- :white_check_mark: UI scrolling user interface
+- :white_check_mark: UI mask
 - :o: Materials: creation and modification in runtime
 + *C#:*
 - :white_check_mark: Singleton
