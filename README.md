@@ -21,10 +21,10 @@ Test project
 - :white_check_mark: Singleton
 - :white_check_mark: Enum
 - :white_check_mark: Switch
-- :o: File management
+- :white_check_mark: File management
 - :o: Threads
 - :o: JSON
-- :o: Object pool
+- :white_check_mark: Object pool
 - :white_check_mark: Actions
 + *OOP:*
 - :white_check_mark: Inheritance (create a class based on the base one)
