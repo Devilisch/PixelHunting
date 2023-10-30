@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Enter point for game
-[RequireComponent(
-    typeof(EnemyManager),
-    typeof(FruitManager)
-)]
 public class GameManager : MonoBehaviour
 {
+    [Header("Managers")]
+    [SerializeField] private EnemyManager enemyManager;
+    [SerializeField] private FruitManager fruitManager;
+    [SerializeField] private TouchManager touchManager;
+    [SerializeField] private GUIManager guiManager;
+    
     [Header("Player")]
     [SerializeField] private PlayerView playerPrefab;
     [SerializeField] private EntityScriptableObject playerScriptableObject;
@@ -29,12 +31,17 @@ public class GameManager : MonoBehaviour
     
     public PlayerController PlayerController { get; private set; } = new PlayerController();
     public ScoreController ScoreController { get; private set; } = new ScoreController();
+    public GameplayController GameplayController { get; private set; } = new GameplayController();
+    
     public EnemyManager EnemyManager { get; private set; }
     public FruitManager FruitManager { get; private set; }
     public TouchManager TouchManager { get; private set; }
+    public GUIManager GUIManager { get; private set; }
+    
+    public bool IsUpdateActive { get; set; } = true;
     
     
-    private int _points = 0;
+    private int points = 0;
 
 
     
@@ -45,9 +52,10 @@ public class GameManager : MonoBehaviour
         else
             Destroy(gameObject);
 
-        EnemyManager = GetComponent<EnemyManager>();
-        FruitManager = GetComponent<FruitManager>();
-        TouchManager = GetComponent<TouchManager>();
+        EnemyManager = enemyManager;
+        FruitManager = fruitManager;
+        TouchManager = touchManager;
+        GUIManager = guiManager;
         
         Utilities.UpdateStagePositions();
         
@@ -56,10 +64,14 @@ public class GameManager : MonoBehaviour
         FruitManager.Init();
         
         TouchManager.AddListener(PlayerController.OnMove);
+        GUIManager.ShowWindow<MenuWindow>();
     }
 
     private void Update()
     {
+        if(!IsUpdateActive)
+            return;
+        
         var deltaTime = Time.deltaTime;
         
         PlayerController.CustomUpdate(deltaTime);

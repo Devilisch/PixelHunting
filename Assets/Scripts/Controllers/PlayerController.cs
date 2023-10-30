@@ -13,14 +13,11 @@ public class PlayerController : EntityController
         
         View = Object.Instantiate(prefab, spawnTransform);
         View.Init(entityScriptableObject);
-        // View.AddDamageListener(OnDamage);
         View.AddCollisionListener(OnHitCollision);
         View.AddCollisionListener(OnCollisionEnter2D);
         entityView = View;
 
         Model = new PlayerModel();
-        
-        OnSpawn();
     }
 
     public void OnSpawn()

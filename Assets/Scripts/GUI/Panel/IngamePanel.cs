@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class IngamePanel : MonoBehaviour
+public class IngamePanel : Panel
 {
     [SerializeField] private Text healthLabel;
     [SerializeField] private Text pointsLabel;
@@ -20,6 +20,19 @@ public class IngamePanel : MonoBehaviour
         );
         
         GameManager.Instance.ScoreController.AddListener(UpdatePointsLabel);
+        
+        pauseButton.onClick.AddListener(() => GameManager.Instance.GUIManager.ShowWindow<PauseWindow>());
+    }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.PlayerController.Model.RemoveListener(
+            (playerModel) => UpdateHealthLabel(playerModel.Health)
+        );
+        
+        GameManager.Instance.ScoreController.RemoveListener(UpdatePointsLabel);
+        
+        pauseButton.onClick.RemoveAllListeners();
     }
 
     public void UpdateHealthLabel(int value) => healthLabel.text = value.ToString();

@@ -12,6 +12,7 @@ public class EnemyManager : MonoBehaviour
     [SerializeField, Range(0,60)] private float moveTimer = 5;
 
     private float time = 0;
+    private bool isGameStart = false;
 
     public ObjectsPool<RatController> Rats { get; private set; }
 
@@ -29,6 +30,9 @@ public class EnemyManager : MonoBehaviour
 
     public void CustomUpdate(float deltaTime)
     {
+        if (!isGameStart)
+            return;
+        
         time += deltaTime;
 
         foreach (var rat in Rats.ActiveObjects)
@@ -49,6 +53,17 @@ public class EnemyManager : MonoBehaviour
     {
         while (Rats.ActiveCount < maxCount)
             Spawn();
+    }
+
+    public void OnGameStart()
+    {
+        isGameStart = true;
+    }
+
+    public void OnGameEnd()
+    {
+        isGameStart = false;
+        Rats.ReturnAll();
     }
     
     private void Spawn() => Rats.Get().OnSpawn();

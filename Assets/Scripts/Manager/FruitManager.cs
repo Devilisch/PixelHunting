@@ -10,7 +10,8 @@ public class FruitManager : MonoBehaviour
     [SerializeField] private FruitView prefab;
     [SerializeField] private Transform fruitsTransform;
     
-    private Dictionary<EntityType, ObjectsPool<FruitController>> _fruitPools = new Dictionary<EntityType, ObjectsPool<FruitController>>();
+    private Dictionary<EntityType, ObjectsPool<FruitController>> fruitPools = new Dictionary<EntityType, ObjectsPool<FruitController>>();
+    private bool isGameStart = false;
     
     
     
@@ -19,13 +20,13 @@ public class FruitManager : MonoBehaviour
         fruitsSettings
             .ForEach(
                 (fruitSetting) => 
-                    _fruitPools.Add(
-                        fruitSetting.Info.Type,
+                    fruitPools.Add(
+                        fruitSetting.info.Type,
                         new ObjectsPool<FruitController>(
-                            () => Initialize(fruitSetting.Info),
+                            () => Initialize(fruitSetting.info),
                             Get,
                             Return,
-                            fruitSetting.Count
+                            fruitSetting.count
                         )
                     )
             );
@@ -35,10 +36,10 @@ public class FruitManager : MonoBehaviour
     
     private void UpdateFruits()
     {
-        foreach (var fruitPool in _fruitPools)
+        foreach (var fruitPool in fruitPools)
         {
             var maxCount = fruitsSettings
-                .First((setting) => setting.Info.Type == fruitPool.Key).Count;
+                .First((setting) => setting.info.Type == fruitPool.Key).count;
                 
             while (fruitPool.Value.ActiveCount < maxCount)
                 Spawn(fruitPool.Key);
@@ -47,9 +48,22 @@ public class FruitManager : MonoBehaviour
     
     public void TakeFruit(FruitController fruit)
     {
-        _fruitPools[fruit.View.Type].Return(fruit);
+        fruitPools[fruit.View.Type].Return(fruit);
     
         UpdateFruits();
+    }
+
+    public void OnGameStart()
+    {
+        isGameStart = true;
+    }
+
+    public void OnGameEnd()
+    {
+        isGameStart = false;
+        
+        foreach(var pool in fruitPools.Values)
+            pool.ReturnAll();
     }
     
     private FruitController Initialize(EntityScriptableObject entityScriptableObject)
@@ -62,7 +76,7 @@ public class FruitManager : MonoBehaviour
     }
     
     private void Spawn(EntityType type) 
-        => _fruitPools[type].Get().View.transform.position = Utilities.GetRandomStagePositions();
+        => fruitPools[type].Get().View.transform.position = Utilities.GetRandomStagePositions();
     private void Get(FruitController fruitController) => fruitController.Show();
     private void Return(FruitController fruitController) => fruitController.Hide();
 }
@@ -70,6 +84,6 @@ public class FruitManager : MonoBehaviour
 [Serializable]
 public class FruitSettings
 {
-    public EntityScriptableObject Info;
-    [Range(0, 100)] public int Count;
+    public EntityScriptableObject info;
+    [Range(0, 100)] public int count;
 }
