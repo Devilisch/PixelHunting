@@ -16,7 +16,6 @@ public class PlayerController : EntityController
         // View.AddDamageListener(OnDamage);
         View.AddCollisionListener(OnHitCollision);
         View.AddCollisionListener(OnCollisionEnter2D);
-        View.AddTriggerListener(OnTriggerEnter2D);
         entityView = View;
 
         Model = new PlayerModel();
@@ -55,26 +54,6 @@ public class PlayerController : EntityController
                 break;
             case EntityType.RAT:
                 OnDamage(1);
-                break;
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        var entity = col.gameObject.GetComponent<EntityView>();
-
-        if (entity == null)
-            return;
-        
-        switch (entity.Type)
-        {
-            default:
-                break;
-            case EntityType.APPLE:
-                break;
-            case EntityType.ORANGE:
-                break;
-            case EntityType.KIWI:
                 break;
         }
     }

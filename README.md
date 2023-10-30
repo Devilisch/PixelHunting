@@ -23,7 +23,7 @@ Test project
 - :white_check_mark: Switch
 - :white_check_mark: File management
 - :o: Threads
-- :o: JSON
+- :white_check_mark: JSON
 - :white_check_mark: Object pool
 - :white_check_mark: Actions
 + *OOP:*

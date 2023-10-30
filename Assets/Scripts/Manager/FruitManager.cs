@@ -45,10 +45,9 @@ public class FruitManager : MonoBehaviour
         }
     }
     
-    
-    private void TakeFruit(EntityView fruit)
+    public void TakeFruit(FruitController fruit)
     {
-        // _fruitPools[fruit.Info.Type].Return(fruit);
+        _fruitPools[fruit.View.Type].Return(fruit);
     
         UpdateFruits();
     }

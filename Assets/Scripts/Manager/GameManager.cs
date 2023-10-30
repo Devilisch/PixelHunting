@@ -26,12 +26,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform fruitsSpawnTransform;
     
     public static GameManager Instance { get; private set; }
-    public PlayerController PlayerController { get; private set; } = new PlayerController();
     
-    private EnemyManager enemyManager;
-    private FruitManager fruitManager;
-    private TouchManager touchManager;
-    private FileManager fileManager = new FileManager();
+    public PlayerController PlayerController { get; private set; } = new PlayerController();
+    public ScoreController ScoreController { get; private set; } = new ScoreController();
+    public EnemyManager EnemyManager { get; private set; }
+    public FruitManager FruitManager { get; private set; }
+    public TouchManager TouchManager { get; private set; }
+    
+    
     private int _points = 0;
 
 
@@ -43,17 +45,17 @@ public class GameManager : MonoBehaviour
         else
             Destroy(gameObject);
 
-        enemyManager = GetComponent<EnemyManager>();
-        fruitManager = GetComponent<FruitManager>();
-        touchManager = GetComponent<TouchManager>();
+        EnemyManager = GetComponent<EnemyManager>();
+        FruitManager = GetComponent<FruitManager>();
+        TouchManager = GetComponent<TouchManager>();
         
         Utilities.UpdateStagePositions();
         
         PlayerController.Init(playerPrefab, playerScriptableObject, playerSpawnTransform);
-        enemyManager.Init();
-        fruitManager.Init();
+        EnemyManager.Init();
+        FruitManager.Init();
         
-        touchManager.AddListener(PlayerController.OnMove);
+        TouchManager.AddListener(PlayerController.OnMove);
     }
 
     private void Update()
@@ -61,7 +63,7 @@ public class GameManager : MonoBehaviour
         var deltaTime = Time.deltaTime;
         
         PlayerController.CustomUpdate(deltaTime);
-        enemyManager.CustomUpdate(deltaTime);
-        touchManager.CustomUpdate(deltaTime);
+        EnemyManager.CustomUpdate(deltaTime);
+        TouchManager.CustomUpdate(deltaTime);
     }
 }

@@ -18,6 +18,8 @@ public class IngamePanel : MonoBehaviour
         GameManager.Instance.PlayerController.Model.AddListener(
             (playerModel) => UpdateHealthLabel(playerModel.Health)
         );
+        
+        GameManager.Instance.ScoreController.AddListener(UpdatePointsLabel);
     }
 
     public void UpdateHealthLabel(int value) => healthLabel.text = value.ToString();

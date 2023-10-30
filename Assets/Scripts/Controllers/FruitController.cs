@@ -13,6 +13,7 @@ public class FruitController : EntityController
     {
         View = Object.Instantiate(prefab, spawnTransform);
         View.Init(entityScriptableObject);
+        View.AddTriggerListener(OnTriggerEnter2D);
         entityView = View;
 
         Model = new PlayerModel();
@@ -26,5 +27,23 @@ public class FruitController : EntityController
         
         View.SetState(EntityState.IDLE);
         View.transform.position = Utilities.GetRandomStagePositions();
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        var entity = col.gameObject.GetComponent<EntityView>();
+
+        if (entity == null)
+            return;
+        
+        switch (entity.Type)
+        {
+            default:
+                break;
+            case EntityType.PLAYER:
+                GameManager.Instance.ScoreController.AddPoints(View.Type);
+                GameManager.Instance.FruitManager.TakeFruit(this);
+                break;
+        }
     }
 }
