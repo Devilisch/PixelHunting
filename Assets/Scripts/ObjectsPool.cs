@@ -53,4 +53,5 @@ public class ObjectsPool<T>
     public void ReturnAll() => _activeObjectsList.ForEach(Return);
     public int ActiveCount => _activeObjectsList.Count;
     public int TotalCount => _objectsPool.Count;
+    public List<T> ActiveObjects => _activeObjectsList;
 }

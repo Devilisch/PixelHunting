@@ -1,5 +1,4 @@
 public interface IDamageable
 {
-    public void OnDamage();
-    public void OnDeath();
+    public void OnDamage(int value);
 }

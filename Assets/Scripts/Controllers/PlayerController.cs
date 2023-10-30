@@ -1,26 +1,81 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(Image))]
-public class PlayerController : MonoBehaviour, IPointerDownHandler
+public class PlayerController : EntityController
 {
-    private Action<Vector3> _onTapAction;
-    
-    
-    
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        var mainCamera = Camera.main;
+    public PlayerView View { get; private set; }
+    public PlayerModel Model { get; private set; }
 
-        if (mainCamera != null) 
-            _onTapAction?.Invoke(mainCamera.ScreenToWorldPoint(eventData.position) - mainCamera.transform.position);
+
+
+    public void Init(PlayerView prefab, EntityScriptableObject entityScriptableObject, Transform spawnTransform)
+    {
+        Speed = entityScriptableObject.Speed;
+        
+        View = Object.Instantiate(prefab, spawnTransform);
+        View.Init(entityScriptableObject);
+        // View.AddDamageListener(OnDamage);
+        View.AddCollisionListener(OnHitCollision);
+        View.AddCollisionListener(OnCollisionEnter2D);
+        View.AddTriggerListener(OnTriggerEnter2D);
+        entityView = View;
+
+        Model = new PlayerModel();
+        
+        OnSpawn();
     }
 
-    public void AddListener(Action<Vector3> action) => _onTapAction += action;
-    public void RemoveListener(Action<Vector3> action) => _onTapAction -= action;
-    public void RemoveAllListeners() => _onTapAction = null;
+    public void OnSpawn()
+    {
+        Model.OnSpawn();
+        
+        View.SetState(EntityState.IDLE);
+        View.transform.position = Vector3.zero;
+    }
+
+    private void OnDamage(int value)
+    {
+        Model.OnDamage(value);
+
+        if (Model.Health == 0)
+        {
+            View.SetState(EntityState.DEATH);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        var entity = col.gameObject.GetComponent<EntityView>();
+
+        if (entity == null)
+            return;
+        
+        switch (entity.Type)
+        {
+            default:
+                break;
+            case EntityType.RAT:
+                OnDamage(1);
+                break;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        var entity = col.gameObject.GetComponent<EntityView>();
+
+        if (entity == null)
+            return;
+        
+        switch (entity.Type)
+        {
+            default:
+                break;
+            case EntityType.APPLE:
+                break;
+            case EntityType.ORANGE:
+                break;
+            case EntityType.KIWI:
+                break;
+        }
+    }
 }

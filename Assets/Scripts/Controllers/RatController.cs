@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FruitController : EntityController
+public class RatController : EntityController
 {
-    public FruitView View { get; private set; }
+    public EnemyView View { get; private set; }
     public PlayerModel Model { get; private set; }
 
 
 
-    public void Init(FruitView prefab, EntityScriptableObject entityScriptableObject, Transform spawnTransform)
+    public void Init(EnemyView prefab, EntityScriptableObject entityScriptableObject, Transform spawnTransform)
     {
+        Speed = entityScriptableObject.Speed;
+        
         View = Object.Instantiate(prefab, spawnTransform);
         View.Init(entityScriptableObject);
+        View.AddCollisionListener(OnHitCollision);
         entityView = View;
 
         Model = new PlayerModel();

@@ -1,57 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
-public class EntityController : MonoBehaviour
+public class EntityController
 {
-    [SerializeField] private Player playerPrefab;
-    [SerializeField] private Rat ratPrefab;
-    [SerializeField] private Transform entitiesTransform;
-    [SerializeField, Range(0,100)] private int ratCount = 5;
-    [SerializeField, Range(0,60)] private float ratMovementTimer = 5;
+    public Vector3 endPoint;
+    
+    protected EntityView entityView;
 
-    private float _time = 0;
-
-    public Player Player { get; private set; }
-    public HashSet<Rat> Rats { get; private set; } = new HashSet<Rat>();
+    public float Speed { get; protected set; }
 
 
 
-    public void Init()
+    public void OnMove(Vector3 point)
     {
-        _time = ratMovementTimer;
+        if (entityView.State == EntityState.DEATH)
+            return;
         
-        Player = Instantiate(playerPrefab, entitiesTransform);
-        Player.Init();
-
-        for (int i = 0; i < ratCount; i++)
-        {
-            var newRat = Instantiate(ratPrefab, entitiesTransform);
-
-            newRat.Init();
-            newRat.transform.position = Utilities.GetRandomStagePositions();
-            Rats.Add(newRat);
-        }
-        Debug.Log(1);
+        entityView.SetState(EntityState.WALK);
+        
+        endPoint = point;
     }
-
+    
     public void CustomUpdate(float deltaTime)
     {
-        Debug.Log(2);
-        _time += deltaTime;
+        if (entityView.State != EntityState.WALK)
+            return;
 
-        Player.CustomUpdate(deltaTime);
-
-        foreach (var rat in Rats)
-        {
-            if (_time > ratMovementTimer)
-                rat.OnMove(Utilities.GetRandomStagePositions());
-            
-            rat.CustomUpdate(deltaTime);
-        }
+        var movementVector = endPoint - entityView.transform.position;
         
-        if (_time > ratMovementTimer)
-            _time = 0;
+        entityView.SetSpriteFlip(movementVector.x < 0);
+
+        if (movementVector.magnitude < 0.1f)
+        {
+            entityView.SetState(EntityState.IDLE);
+
+            entityView.transform.position = endPoint;
+        }
+        else
+        {
+            entityView.transform.position += movementVector.normalized * Speed * deltaTime;
+        }
     }
+
+    protected void OnHitCollision(Collision2D col)
+    {
+        var entity = col.gameObject.GetComponent<EntityView>();
+
+        if (entity != null)
+            entityView.transform.position += (entityView.transform.position - col.transform.position).normalized;
+    }
+
+    public void Show() => entityView.Show();
+    public void Hide() => entityView.Hide();
 }

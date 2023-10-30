@@ -7,7 +7,7 @@ public class FileManager
     private Dictionary<string, TextAsset> _fileCache = new Dictionary<string, TextAsset>();
     
     private const string STATISTICS_JSON_PATH = "JSON/statistics.json";
-    private const string TARGETS_TXT_PATH = "Text/targets.txt";
+    private const string TARGETS_TXT_PATH = "Text/info.txt";
 
 
     
