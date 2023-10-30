@@ -11,7 +11,7 @@ Test project
 - :white_check_mark: Separate logic and view
 + *Unity:*
 - :white_check_mark: Animation (controller, logic of transitions between states)
-- :o: Raycasting
+- :white_check_mark: Raycasting
 - :white_check_mark: Collider
 - :white_check_mark: Coroutine
 - :white_check_mark: UI scrolling user interface
