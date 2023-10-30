@@ -35,6 +35,7 @@ public class PlayerController : EntityController
         if (Model.Health == 0)
         {
             View.SetState(EntityState.DEATH);
+            GameManager.Instance.GameplayController.OnPlayerDeath();
         }
     }
 

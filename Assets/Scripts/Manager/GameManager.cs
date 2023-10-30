@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour
         Utilities.UpdateStagePositions();
         
         PlayerController.Init(playerPrefab, playerScriptableObject, playerSpawnTransform);
+        GameplayController.Init();
         EnemyManager.Init();
         FruitManager.Init();
         

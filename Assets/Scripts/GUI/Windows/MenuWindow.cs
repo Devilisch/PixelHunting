@@ -36,7 +36,7 @@ public class MenuWindow : Window
 
     private void OnInfoButtonClicked()
     {
-        
+        GameManager.Instance.GUIManager.ShowWindow<InfoWindow>();
     }
 
     private void OnExitButtonClicked() => Application.Quit();

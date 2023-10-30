@@ -50,7 +50,12 @@ public class ObjectsPool<T>
         _activeObjectsList.Remove(usingObject);
     }
 
-    public void ReturnAll() => _activeObjectsList.ForEach(Return);
+    public void ReturnAll()
+    {
+        for(int i = 0; i < _activeObjectsList.Count; i++ )
+            Return(_activeObjectsList[i]);
+    }
+    
     public int ActiveCount => _activeObjectsList.Count;
     public int TotalCount => _objectsPool.Count;
     public List<T> ActiveObjects => _activeObjectsList;

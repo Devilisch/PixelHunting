@@ -10,9 +10,8 @@ public class GUIManager : MonoBehaviour
     [Header("Windows")]
     [SerializeField] private MenuWindow menuWindow;
     [SerializeField] private PauseWindow pauseWindow;
-    // [SerializeField] private GameOverWindow buffWindow;
-    // [SerializeField] private InfoWindow pauseWindow;
-    // [SerializeField] private GameOverWindow gameOverWindow;
+    [SerializeField] private GameOverWindow gameOverWindow;
+    [SerializeField] private InfoWindow infoWindow;
 
     private HashSet<Window> _openedWindows = new HashSet<Window>();
     private HashSet<Panel> _openedPanels = new HashSet<Panel>();
@@ -36,6 +35,10 @@ public class GUIManager : MonoBehaviour
                 return menuWindow.Show() as T;
             case "PauseWindow":
                 return pauseWindow.Show() as T;
+            case "GameOverWindow":
+                return gameOverWindow.Show() as T;
+            case "InfoWindow":
+                return infoWindow.Show() as T;
         }
     }
 

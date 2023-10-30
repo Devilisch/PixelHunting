@@ -4,11 +4,31 @@ using UnityEngine;
 
 public class ScoreController
 {
+    private int highScore = -1;
     private JSONObject statisticsJson;
     private Action<int> updateScoreAction;
     
     public int Points { get; private set; } = 0;
-    public int HighScore { get; private set; } = 1;
+
+    public int HighScore
+    {
+        get
+        {
+            if (highScore < 0)
+                Load();
+
+            return highScore;
+        }
+
+        private set
+        {
+            if (value > highScore)
+            {
+                highScore = value;
+                Save();
+            }
+        }
+    }
 
     
     
@@ -36,23 +56,27 @@ public class ScoreController
         Points = 0;
         
         updateScoreAction?.Invoke(Points);
-    } 
+    }
 
     public void Save()
     {
         if (statisticsJson.HasField("HighScore"))
-            statisticsJson["HighScore"].intValue = HighScore;
+            statisticsJson.SetField("HighScore", HighScore);
+        else
+            statisticsJson.AddField("HighScore", HighScore);
 
         FileManager.SaveStatistics(statisticsJson.ToString());
     }
 
-    public void Load()
+    private void Load()
     {
         statisticsJson = new JSONObject(FileManager.LoadStatistics());
 
         if (statisticsJson.HasField("HighScore"))
             HighScore = statisticsJson["HighScore"].intValue;
     }
+
+    public void UpdateHighScore() => HighScore = Points;
     
     public void AddListener(Action<int> action) => updateScoreAction += action;
     public void RemoveListener(Action<int> action) => updateScoreAction -= action;

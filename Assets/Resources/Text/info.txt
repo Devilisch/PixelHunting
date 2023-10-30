@@ -1,0 +1,54 @@
+PixelHunting
+Test project
+
+Unity version: 2020.3.32f1
+Platform: Android
+Screen: Vertical
+
+
+TO DO:
++ <b>Architecture</b>:
+    - <color=green>Separate logic and view</color>
++ <b>Unity</b>:
+    - <color=green>Animation (controller, logic of transitions between states)</color>
+    - <color=green>Raycasting</color>
+    - <color=green>Collider</color>
+    - <color=green>Coroutine</color>
+    - <color=green>UI scrolling user interface</color>
+    - <color=green>UI mask</color>
+    - <color=red>Materials: creation and modification in runtime</color>
++ <b>C#</b>:
+    - <color=green>Singleton</color>
+    - <color=green>Enum</color>
+    - <color=green>Switch</color>
+    - <color=green>File management</color>
+    - <color=red>Threads</color>
+    - <color=green>JSON</color>
+    - <color=green>Object pool</color>
+    - <color=green>Actions</color>
++ <b>OOP</b>:
+    - <color=green>Inheritance (create a class based on the base one)</color>
+    - <color=green>Interface</color>
+
+
+<b>Game components</b>:
+- Player controls hero by tapping on the screen
+- There are 2 types of objects on the map - enemies and fruits
+- Touching the fruit the player gets points
+- Touching an enemy the player loses lives
+- When the player runs out of lives, the game ends
+- Enemies move chaotically across the map
+- Fruits are motionless
+
+
+<b>GUI</b>:
+- Start menu with the Play button
+- In-game interface displaying lives and points
+- Game over window with score
+
+
+<b>Code requirements</b>:
+- Do not use ECS
+- Minimize the use of MonoBehavior functions
+- Avoid public functions
+- Do not use Zenject and its analogues
