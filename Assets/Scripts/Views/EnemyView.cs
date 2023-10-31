@@ -1,4 +1,7 @@
-public class EnemyView : EntityView
+namespace Views
 {
+    public class EnemyView : EntityView
+    {
     
+    }
 }

@@ -1,58 +1,66 @@
 using UnityEngine;
 
-public class PlayerController : EntityController
+using Managers;
+using Models;
+using ScriptableObjects;
+using Views;
+
+namespace Controllers
 {
-    public PlayerView View { get; private set; }
-    public PlayerModel Model { get; private set; }
-
-
-
-    public void Init(PlayerView prefab, EntityScriptableObject entityScriptableObject, Transform spawnTransform)
+    public class PlayerController : EntityController
     {
-        Speed = entityScriptableObject.Speed;
-        
-        View = Object.Instantiate(prefab, spawnTransform);
-        View.Init(entityScriptableObject);
-        View.AddCollisionListener(OnHitCollision);
-        View.AddCollisionListener(OnCollisionEnter2D);
-        entityView = View;
+        public PlayerView View { get; private set; }
+        public PlayerModel Model { get; private set; }
 
-        Model = new PlayerModel();
-    }
 
-    public void OnSpawn()
-    {
-        Model.OnSpawn();
-        
-        View.SetState(EntityState.IDLE);
-        View.transform.position = Vector3.zero;
-    }
 
-    private void OnDamage(int value)
-    {
-        Model.OnDamage(value);
-
-        if (Model.Health == 0)
+        public void Init(PlayerView prefab, EntityScriptableObject entityScriptableObject, Transform spawnTransform)
         {
-            View.SetState(EntityState.DEATH);
-            GameManager.Instance.GameplayController.OnPlayerDeath();
+            Speed = entityScriptableObject.Speed;
+        
+            View = Object.Instantiate(prefab, spawnTransform);
+            View.Init(entityScriptableObject);
+            View.AddCollisionListener(OnHitCollision);
+            View.AddCollisionListener(OnCollisionEnter2D);
+            entityView = View;
+
+            Model = new PlayerModel();
         }
-    }
 
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        var entity = col.gameObject.GetComponent<EntityView>();
-
-        if (entity == null)
-            return;
-        
-        switch (entity.Type)
+        public void OnSpawn()
         {
-            default:
-                break;
-            case EntityType.RAT:
-                OnDamage(1);
-                break;
+            Model.OnSpawn();
+
+            View.OnSpawn();
+            View.transform.position = Vector3.zero;
+        }
+
+        private void OnDamage(int value)
+        {
+            Model.OnDamage(value);
+
+            if (Model.Health == 0)
+            {
+                View.SetState(EntityState.DEATH);
+                GameManager.Instance.GameplayController.OnPlayerDeath();
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D col)
+        {
+            var entity = col.gameObject.GetComponent<EntityView>();
+
+            if (entity == null)
+                return;
+        
+            switch (entity.Type)
+            {
+                default:
+                    break;
+                case EntityType.RAT:
+                    OnDamage(1);
+                    break;
+            }
         }
     }
 }

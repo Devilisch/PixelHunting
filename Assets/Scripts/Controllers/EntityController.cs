@@ -1,54 +1,62 @@
 using UnityEngine;
 
-public class EntityController
+using Views;
+
+namespace Controllers
 {
-    public Vector3 endPoint;
+    public class EntityController
+    {
+        public Vector3 endPoint;
     
-    protected EntityView entityView;
+        protected EntityView entityView;
 
-    public float Speed { get; protected set; }
+        public float Speed { get; protected set; }
 
 
 
-    public void OnMove(Vector3 point)
-    {
-        if (entityView.State == EntityState.DEATH)
-            return;
+        public void OnMove(Vector3 point)
+        {
+            if (entityView.State == EntityState.DEATH)
+                return;
         
-        entityView.SetState(EntityState.WALK);
+            entityView.SetState(EntityState.WALK);
         
-        endPoint = point;
-    }
+            endPoint = point;
+        }
     
-    public void CustomUpdate(float deltaTime)
-    {
-        if (entityView.State != EntityState.WALK)
-            return;
+        public void CustomUpdate(float deltaTime)
+        {
+            if (entityView.State != EntityState.WALK)
+                return;
 
-        var movementVector = endPoint - entityView.transform.position;
+            var movementVector = endPoint - entityView.transform.position;
         
-        entityView.SetSpriteFlip(movementVector.x < 0);
+            entityView.SetSpriteFlip(movementVector.x < 0);
 
-        if (movementVector.magnitude < 0.1f)
-        {
-            entityView.SetState(EntityState.IDLE);
+            if (movementVector.magnitude < 0.1f)
+            {
+                entityView.SetState(EntityState.IDLE);
 
-            entityView.transform.position = endPoint;
+                entityView.transform.position = endPoint;
+            }
+            else
+            {
+                entityView.transform.position += movementVector.normalized * Speed * deltaTime;
+            }
         }
-        else
+
+        protected void OnHitCollision(Collision2D col)
         {
-            entityView.transform.position += movementVector.normalized * Speed * deltaTime;
+            var entity = col.gameObject.GetComponent<EntityView>();
+
+            if (entity != null)
+            {
+                entityView.transform.position += (entityView.transform.position - col.transform.position).normalized;
+                Debug.Log(entityView.gameObject.name + " crashed into " + col.gameObject.name);
+            }
         }
+
+        public void Show() => entityView.Show();
+        public void Hide() => entityView.Hide();
     }
-
-    protected void OnHitCollision(Collision2D col)
-    {
-        var entity = col.gameObject.GetComponent<EntityView>();
-
-        if (entity != null)
-            entityView.transform.position += (entityView.transform.position - col.transform.position).normalized;
-    }
-
-    public void Show() => entityView.Show();
-    public void Hide() => entityView.Hide();
 }

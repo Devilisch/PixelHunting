@@ -1,33 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class RatController : EntityController
+using Models;
+using ScriptableObjects;
+using Views;
+
+namespace Controllers
 {
-    public EnemyView View { get; private set; }
-    public PlayerModel Model { get; private set; }
-
-
-
-    public void Init(EnemyView prefab, EntityScriptableObject entityScriptableObject, Transform spawnTransform)
+    public class RatController : EntityController
     {
-        Speed = entityScriptableObject.Speed;
-        
-        View = Object.Instantiate(prefab, spawnTransform);
-        View.Init(entityScriptableObject);
-        View.AddCollisionListener(OnHitCollision);
-        entityView = View;
+        public EnemyView View { get; private set; }
 
-        Model = new PlayerModel();
-        
-        OnSpawn();
-    }
 
-    public void OnSpawn()
-    {
-        Model.OnSpawn();
+
+        public void Init(EnemyView prefab, EntityScriptableObject entityScriptableObject, Transform spawnTransform)
+        {
+            Speed = entityScriptableObject.Speed;
         
-        View.SetState(EntityState.IDLE);
-        View.transform.position = Utilities.GetRandomStagePositions();
+            View = Object.Instantiate(prefab, spawnTransform);
+            View.Init(entityScriptableObject);
+            View.AddCollisionListener(OnHitCollision);
+            entityView = View;
+        
+            OnSpawn();
+        }
+
+        public void OnSpawn()
+        {
+            View.SetState(EntityState.IDLE);
+            View.transform.position = Utilities.GetRandomStagePositions();
+        }
     }
 }

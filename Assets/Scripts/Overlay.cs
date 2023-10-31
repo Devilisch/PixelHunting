@@ -52,7 +52,7 @@ public class Overlay : MonoBehaviour
     [RuntimeInitializeOnLoadMethod]
     static void InitializeOnLoad()
     {
-        // new GameObject(nameof(Overlay)).AddComponent<Overlay>();
+        new GameObject(nameof(Overlay)).AddComponent<Overlay>();
     }
 
     void Awake()
@@ -181,9 +181,9 @@ public class Overlay : MonoBehaviour
                 "[" + DateTime.UtcNow.ToLongTimeString() + " " + logType.ToString() + "]\n" + 
                 message + ( logType == LogType.Error || logType == LogType.Exception || logType == LogType.Assert ? "Trace:\n" + stackTrace : "" ) + "\n\n";
 
-        messages.Enqueue(entry);
-
-        UpdateLog();
+        // messages.Enqueue(entry);
+        //
+        // UpdateLog();
     }
 
     void UpdateLog()
@@ -205,16 +205,16 @@ public class Overlay : MonoBehaviour
         GUILayout.BeginArea(Screen.safeArea);
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
-        GUILayout.Label("FPS      ", style );
+        GUILayout.Label("FPS: " + fps + " Time: " + time, style );
         GUILayout.EndHorizontal();
-        GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-        GUILayout.Label(fps + "      ", style );
-        GUILayout.EndHorizontal();
-        GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-        GUILayout.Label(time + "      ", style);
-        GUILayout.EndHorizontal();
+        // GUILayout.BeginHorizontal();
+        // GUILayout.FlexibleSpace();
+        // GUILayout.Label(fps + "      ", style );
+        // GUILayout.EndHorizontal();
+        // GUILayout.BeginHorizontal();
+        // GUILayout.FlexibleSpace();
+        // GUILayout.Label(time + "      ", style);
+        // GUILayout.EndHorizontal();
         GUILayout.EndArea();
         ;
     }

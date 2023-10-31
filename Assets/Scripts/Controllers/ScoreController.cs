@@ -1,14 +1,62 @@
 using System;
 using Defective.JSON;
-using UnityEngine;
 
-public class ScoreController
+using Managers;
+
+namespace Controllers
 {
-    private int highScore = -1;
-    private JSONObject statisticsJson;
-    private Action<int> updateScoreAction;
+    public class ScoreController
+    {
+        private Action<int> updateScoreAction;
+        public ScoreModel Model { get; private set; }
+
+
+
+        public void Init()
+        {
+            Model = new ScoreModel();
+        }
+        
+        public void AddPoints(EntityType type)
+        {
+            switch (type)
+            {
+                default:
+                case EntityType.APPLE:
+                    Model.AddPoints(1);
+                    break;
+                case EntityType.ORANGE:
+                    Model.AddPoints(5);
+                    break;
+                case EntityType.KIWI:
+                    Model.AddPoints(10);
+                    break;
+            }
+        
+            updateScoreAction?.Invoke(Model.Score);
+        }
+
+        public void Reset()
+        {
+            Model.Reset();
+        
+            updateScoreAction?.Invoke(Model.Score);
+        }
+
+        public void UpdateHighScore() => Model.SaveHighScore();
     
-    public int Points { get; private set; } = 0;
+        public void AddListener(Action<int> action) => updateScoreAction += action;
+        public void RemoveListener(Action<int> action) => updateScoreAction -= action;
+    }
+}
+
+public class ScoreModel
+{
+    private JSONObject statisticsJson;
+    
+    private int highScore = -1;
+    
+    public int Score { get; private set; } = 0;
 
     public int HighScore
     {
@@ -30,54 +78,43 @@ public class ScoreController
         }
     }
 
-    
-    
-    public void AddPoints(EntityType type)
-    {
-        switch (type)
-        {
-            default:
-            case EntityType.APPLE:
-                Points += 1;
-                break;
-            case EntityType.ORANGE:
-                Points += 5;
-                break;
-            case EntityType.KIWI:
-                Points += 10;
-                break;
-        }
-        
-        updateScoreAction?.Invoke(Points);
-    }
-
-    public void Reset()
-    {
-        Points = 0;
-        
-        updateScoreAction?.Invoke(Points);
-    }
-
     public void Save()
     {
-        if (statisticsJson.HasField("HighScore"))
-            statisticsJson.SetField("HighScore", HighScore);
+        if (statisticsJson != null && statisticsJson.HasField("HighScore"))
+        {
+            statisticsJson.SetField("HighScore", highScore);
+        }
         else
-            statisticsJson.AddField("HighScore", HighScore);
+        {
+            statisticsJson = new JSONObject();
+            statisticsJson.AddField("HighScore", highScore);
+        }
 
         FileManager.SaveStatistics(statisticsJson.ToString());
     }
 
     private void Load()
     {
-        statisticsJson = new JSONObject(FileManager.LoadStatistics());
+        highScore = 0;
+        
+        var statisticsString = FileManager.LoadStatistics();
+        
+        if (string.IsNullOrEmpty(statisticsString))
+            return;
+            
+        statisticsJson = new JSONObject(statisticsString);
 
         if (statisticsJson.HasField("HighScore"))
-            HighScore = statisticsJson["HighScore"].intValue;
+            highScore = statisticsJson["HighScore"].intValue;
     }
 
-    public void UpdateHighScore() => HighScore = Points;
-    
-    public void AddListener(Action<int> action) => updateScoreAction += action;
-    public void RemoveListener(Action<int> action) => updateScoreAction -= action;
+    public void AddPoints(int value)
+    {
+        if (value > 0)
+            Score += value;
+    }
+
+    public void SaveHighScore() => HighScore = Score;
+
+    public void Reset() => Score = 0;
 }

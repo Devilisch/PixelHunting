@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -52,8 +51,8 @@ public class ObjectsPool<T>
 
     public void ReturnAll()
     {
-        for(int i = 0; i < _activeObjectsList.Count; i++ )
-            Return(_activeObjectsList[i]);
+        while(_activeObjectsList.Count > 0)
+            Return(_activeObjectsList[0]);
     }
     
     public int ActiveCount => _activeObjectsList.Count;

@@ -1,4 +1,7 @@
-public class FruitView : EntityView
+namespace Views
 {
+    public class FruitView : EntityView
+    {
     
+    }
 }
