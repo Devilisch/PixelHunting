@@ -11,7 +11,7 @@ namespace Managers
     
         public void CustomUpdate(float deltaTime)
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             // for Windows testing
             if (!Input.GetButtonDown("Fire1"))
                 return;
@@ -26,20 +26,23 @@ namespace Managers
             {
                 // Debug.Log("Did not Hit");
             }
-        #endif
-            // // for Android
-            // if (Input.touchCount == 0)
-            //     return;
-            //
-            // if (Camera.main != null &&
-            //     Physics.Raycast(
-            //         Camera.main.ScreenPointToRay(
-            //             Input.touches[Input.touchCount - 1].position), 
-            //             out var hit, 
-            //             10
-            //         )
-            //     )
-            //     onTouchAction?.Invoke(new Vector3(hit.point.x, hit.point.y, 0));
+#endif
+            
+#if !UNITY_EDITOR
+            // for Android
+            if (Input.touchCount == 0)
+                return;
+            
+            if (Camera.main != null &&
+                Physics.Raycast(
+                    Camera.main.ScreenPointToRay(
+                        Input.touches[Input.touchCount - 1].position), 
+                        out var hit, 
+                        10
+                    )
+                )
+                onTouchAction?.Invoke(new Vector3(hit.point.x, hit.point.y, 0));
+#endif
         }
     
         public void AddListener(Action<Vector3> action) => onTouchAction += action;
