@@ -11,6 +11,7 @@ namespace Managers
     
         public void CustomUpdate(float deltaTime)
         {
+            #if UNITY_EDITOR
             // for Windows testing
             if (!Input.GetButtonDown("Fire1"))
                 return;
@@ -25,7 +26,7 @@ namespace Managers
             {
                 // Debug.Log("Did not Hit");
             }
-        
+        #endif
             // // for Android
             // if (Input.touchCount == 0)
             //     return;
