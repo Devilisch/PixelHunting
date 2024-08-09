@@ -28,7 +28,7 @@ namespace Managers
             }
 #endif
             
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR 
             // for Android
             if (Input.touchCount == 0)
                 return;
